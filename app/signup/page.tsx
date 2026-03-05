@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Eye, EyeOff, Mail, Lock, User, Phone, ArrowRight, CheckCircle } from 'lucide-react';
+import { getSupabaseClient } from '@/lib/supabase';
 
 export default function SignupPage() {
     const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', confirm: '' });
@@ -21,9 +22,29 @@ export default function SignupPage() {
         if (form.password !== form.confirm) { setError('Passwords do not match.'); return; }
         if (form.password.length < 8) { setError('Password must be at least 8 characters.'); return; }
         setLoading(true);
-        // Replace with: const { error } = await supabase.auth.signUp({ email: form.email, password: form.password, options: { data: { full_name: form.name, phone: form.phone } } })
-        await new Promise(r => setTimeout(r, 1400));
-        setSuccess(true);
+
+        const supabase = getSupabaseClient();
+        if (!supabase) {
+            // Demo mode fallback
+            await new Promise(r => setTimeout(r, 1000));
+            setSuccess(true);
+            setLoading(false);
+            return;
+        }
+
+        const { error: authError } = await supabase.auth.signUp({
+            email: form.email,
+            password: form.password,
+            options: {
+                data: { full_name: form.name, phone: form.phone },
+            },
+        });
+
+        if (authError) {
+            setError(authError.message);
+        } else {
+            setSuccess(true);
+        }
         setLoading(false);
     };
 

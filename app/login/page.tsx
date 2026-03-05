@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Eye, EyeOff, Mail, Lock, ArrowRight, ShieldCheck } from 'lucide-react';
+import { getSupabaseClient } from '@/lib/supabase';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -17,14 +18,30 @@ export default function LoginPage() {
         setError('');
         if (!email || !password) { setError('Please fill in all fields.'); return; }
         setLoading(true);
-        // Simulate auth — replace with Supabase: const { error } = await supabase.auth.signInWithPassword({ email, password })
-        await new Promise(r => setTimeout(r, 1200));
-        if (email === 'demo@vnodenutra.com' && password === 'Demo@1234') {
-            localStorage.setItem('vnode-customer-session', JSON.stringify({ email, name: 'Demo User', loggedIn: true }));
+
+        const supabase = getSupabaseClient();
+        if (!supabase) {
+            // Supabase not configured — fall back to demo credentials for testing
+            await new Promise(r => setTimeout(r, 800));
+            if (email === 'demo@vnodenutra.com' && password === 'Demo@1234') {
+                localStorage.setItem('vnode-customer-session', JSON.stringify({ email, name: 'Demo User', loggedIn: true }));
+                setSuccess(true);
+                setTimeout(() => window.location.href = '/account', 800);
+            } else {
+                setError('Supabase not configured — use demo credentials below.');
+            }
+            setLoading(false);
+            return;
+        }
+
+        const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
+        if (authError) {
+            setError(authError.message === 'Invalid login credentials'
+                ? 'Invalid email or password. Please check your credentials and try again.'
+                : authError.message);
+        } else {
             setSuccess(true);
             setTimeout(() => window.location.href = '/account', 800);
-        } else {
-            setError('Invalid email or password. Try demo@vnodenutra.com / Demo@1234');
         }
         setLoading(false);
     };

@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useCartStore } from '@/store/cartStore';
 import { ArrowRight, ShieldCheck, Truck, MapPin, Loader2, Check } from 'lucide-react';
+import { getSupabaseClient } from '@/lib/supabase';
 
 interface AddressForm {
     name: string; email: string; phone: string;
@@ -19,12 +20,44 @@ export default function CheckoutPage() {
     const [stage, setStage] = useState<'address' | 'payment' | 'success'>('address');
     const [paying, setPaying] = useState(false);
     const [orderId, setOrderId] = useState('');
+    const [authChecked, setAuthChecked] = useState(false);
+
+    // ── Auth guard: redirect to login if not signed in ────────────────────────
+    useEffect(() => {
+        const checkAuth = async () => {
+            const supabase = getSupabaseClient();
+            if (!supabase) {
+                // Supabase not configured — allow demo access
+                setAuthChecked(true);
+                return;
+            }
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                window.location.href = '/login?next=/checkout';
+                return;
+            }
+            setAuthChecked(true);
+        };
+        checkAuth();
+    }, []);
+
+    if (!authChecked) {
+        return (
+            <main className="min-h-screen bg-[#f5f5f5] flex items-center justify-center">
+                <div className="flex flex-col items-center gap-3 text-gray-400">
+                    <Loader2 className="w-8 h-8 animate-spin" />
+                    <p className="text-sm">Verifying your session...</p>
+                </div>
+            </main>
+        );
+    }
 
     const subtotal = totalPrice();
     const discount = discountAmount?.(subtotal) ?? 0;
     const delivery = subtotal >= 999 ? 0 : 79;
     const total = (finalTotal?.(subtotal) ?? (subtotal - discount)) + delivery;
     const addrOk = addr.name && addr.phone && addr.line1 && addr.city && addr.state && addr.pincode;
+
 
     const launchPayment = async () => {
         setPaying(true);

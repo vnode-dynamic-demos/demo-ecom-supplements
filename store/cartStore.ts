@@ -28,6 +28,21 @@ interface ExtendedCartState extends CartState {
     finalTotal: (subtotal: number) => number;
 }
 
+// ─── GWP (Gift With Purchase) config ─────────────────────────────────────────
+const GWP_TRIGGER_SLUG = 'hyperwhey-pro-whey-protein';
+const GWP_FREE_VARIANT_ID = 'gwp-purecre-free';
+const GWP_FREE_ITEM = {
+    variantId: GWP_FREE_VARIANT_ID,
+    productId: 'gwp-3',
+    productName: 'PureCre Monohydrate 250g — 🎁 FREE Gift',
+    productSlug: 'purecre-monohydrate',
+    imageUrl: '/products/purecre.png',
+    flavor: 'Unflavored',
+    size: '250g',
+    price: 0,
+    isFree: true,
+};
+
 export const useCartStore = create<ExtendedCartState>()(
     persist(
         (set, get) => ({
@@ -48,12 +63,35 @@ export const useCartStore = create<ExtendedCartState>()(
                         items: [...state.items, { ...newItem, quantity: 1 }],
                     }));
                 }
+
+                // ── GWP: auto-add free PureCre when HyperWhey Pro is added ──────
+                if (newItem.productSlug === GWP_TRIGGER_SLUG) {
+                    const alreadyHasFree = get().items.find(i => i.variantId === GWP_FREE_VARIANT_ID);
+                    if (!alreadyHasFree) {
+                        set((state) => ({
+                            items: [...state.items, { ...GWP_FREE_ITEM, quantity: 1 }],
+                        }));
+                    }
+                }
             },
 
-            removeItem: (variantId) =>
+            removeItem: (variantId) => {
+                const item = get().items.find(i => i.variantId === variantId);
                 set((state) => ({
                     items: state.items.filter((i) => i.variantId !== variantId),
-                })),
+                }));
+                // ── GWP: auto-remove free PureCre when HyperWhey is removed ─────
+                if (item?.productSlug === GWP_TRIGGER_SLUG) {
+                    set((state) => ({
+                        items: state.items.filter(i => i.variantId !== GWP_FREE_VARIANT_ID),
+                    }));
+                }
+                // Prevent manually removing the free GWP item
+                if (variantId === GWP_FREE_VARIANT_ID) {
+                    const hasHyperWhey = get().items.find(i => i.productSlug === GWP_TRIGGER_SLUG);
+                    if (hasHyperWhey) return; // block removal while HyperWhey is in cart
+                }
+            },
 
             updateQuantity: (variantId, quantity) => {
                 if (quantity <= 0) { get().removeItem(variantId); return; }

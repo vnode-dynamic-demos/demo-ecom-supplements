@@ -54,8 +54,8 @@ export default function VariantSelector({
         <div className="space-y-5">
             {/* Flavors */}
             <div>
-                <p className="text-sm font-semibold text-zinc-400 uppercase tracking-widest mb-3">
-                    Flavor: <span className="text-white normal-case tracking-normal">{selectedFlavor}</span>
+                <p className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-3">
+                    Flavor: <span className="text-gray-800 normal-case tracking-normal font-bold">{selectedFlavor}</span>
                 </p>
                 <div className="flex flex-wrap gap-2">
                     {flavors.map((flavor) => (
@@ -65,8 +65,8 @@ export default function VariantSelector({
                             className={cn(
                                 'px-4 py-2 rounded-full text-sm font-medium border transition-all duration-200',
                                 selectedFlavor === flavor
-                                    ? 'bg-orange-500 border-orange-500 text-white shadow-lg shadow-orange-500/25'
-                                    : 'bg-zinc-900 border-zinc-700 text-zinc-300 hover:border-orange-500 hover:text-orange-400'
+                                    ? 'bg-[#1a237e] border-[#1a237e] text-white shadow-md'
+                                    : 'bg-white border-gray-200 text-gray-700 hover:border-[#1a237e] hover:text-[#1a237e]'
                             )}
                         >
                             {flavor}
@@ -77,8 +77,8 @@ export default function VariantSelector({
 
             {/* Sizes */}
             <div>
-                <p className="text-sm font-semibold text-zinc-400 uppercase tracking-widest mb-3">
-                    Size: <span className="text-white normal-case tracking-normal">{selectedSize}</span>
+                <p className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-3">
+                    Size: <span className="text-gray-800 normal-case tracking-normal font-bold">{selectedSize}</span>
                 </p>
                 <div className="flex flex-wrap gap-2">
                     {sizes.map((size) => {
@@ -91,10 +91,10 @@ export default function VariantSelector({
                                 className={cn(
                                     'px-5 py-2 rounded-lg text-sm font-semibold border transition-all duration-200',
                                     selectedSize === size
-                                        ? 'bg-orange-500 border-orange-500 text-white shadow-lg shadow-orange-500/25'
+                                        ? 'bg-[#1a237e] border-[#1a237e] text-white shadow-md'
                                         : available
-                                            ? 'bg-zinc-900 border-zinc-700 text-zinc-300 hover:border-orange-500 hover:text-orange-400'
-                                            : 'bg-zinc-900/50 border-zinc-800 text-zinc-600 cursor-not-allowed line-through'
+                                            ? 'bg-white border-gray-200 text-gray-700 hover:border-[#1a237e] hover:text-[#1a237e]'
+                                            : 'bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed line-through'
                                 )}
                             >
                                 {size}
@@ -106,7 +106,7 @@ export default function VariantSelector({
 
             {/* Stock label */}
             {currentVariant && (
-                <p className={cn('text-sm font-medium', currentVariant.stock > 20 ? 'text-green-400' : currentVariant.stock > 0 ? 'text-yellow-400' : 'text-red-400')}>
+                <p className={cn('text-sm font-medium', currentVariant.stock > 20 ? 'text-green-600' : currentVariant.stock > 0 ? 'text-amber-600' : 'text-red-500')}>
                     {currentVariant.stock > 20
                         ? '✓ In Stock'
                         : currentVariant.stock > 0
