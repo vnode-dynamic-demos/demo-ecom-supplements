@@ -1,36 +1,129 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# V-Node Nutra — Multi-Brand Supplement E-Commerce Platform
 
-## Getting Started
+A full-featured supplement e-commerce platform built with **Next.js 15** (App Router), **Tailwind CSS v4**, **Supabase** (PostgreSQL + Auth + Storage), and **Zustand** for state management.
 
-First, run the development server:
+---
+
+## ⚡ Quick Start (Local Development)
 
 ```bash
+# 1. Install dependencies
+npm install
+
+# 2. Copy and fill environment variables
+# Edit .env.local with your Supabase keys (see Setup Guide below)
+
+# 3. Start dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open **http://localhost:3000**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🧪 Test Credentials
 
-## Learn More
+| Portal | URL | Username | Password |
+|--------|-----|----------|----------|
+| Customer Login | `/login` | `demo@vnodenutra.com` | `Demo@1234` |
+| Admin Panel | `/admin` | `admin` | `vnode@admin` |
+| Order Tracking | `/track` | — | Try `VN20260001` |
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📂 Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+app/
+├── page.tsx                  # Homepage
+├── products/page.tsx         # Product listing + filters
+├── product/[id]/             # Product Detail Page (PDP)
+├── login/page.tsx            # Customer login
+├── signup/page.tsx           # Customer sign-up
+├── forgot-password/page.tsx  # Password reset
+├── account/page.tsx          # Customer profile + orders
+├── checkout/page.tsx         # Checkout (address + payment)
+├── track/page.tsx            # Order tracking
+├── wishlist/page.tsx         # Wishlist page
+└── admin/
+    ├── login/page.tsx        # Admin login
+    ├── page.tsx              # Admin dashboard
+    ├── products/             # Products CRUD
+    ├── customers/            # Customer management
+    ├── banners/              # Homepage banners
+    ├── coupons/              # Discount coupons
+    ├── offers/               # GWP offers
+    ├── orders/               # Order management
+    ├── reviews/              # Review moderation
+    └── analytics/            # Sales analytics
 
-## Deploy on Vercel
+components/
+├── layout/
+│   ├── Navbar.tsx            # Sticky two-row navbar
+│   └── AnnouncementBar.tsx   # Top scrolling banner
+├── product/
+│   ├── ProductCard.tsx       # Product grid card
+│   ├── ReviewSection.tsx     # Reviews + write review form
+│   └── NutritionFacts.tsx    # Nutrition label component
+└── cart/
+    └── CartSlideout.tsx      # Slide-out cart drawer
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+store/
+├── cartStore.ts              # Zustand cart with persistence
+└── wishlistStore.ts          # Zustand wishlist with persistence
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+lib/
+└── products.ts               # Product data layer (replace with Supabase)
+
+supabase/
+└── schema.sql                # Full database schema + seed data
+```
+
+---
+
+## 🌐 Environment Variables
+
+```env
+# .env.local
+NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGci...
+SUPABASE_SERVICE_KEY=eyJhbGci...        # Server-side only, never expose
+
+# Payment (Razorpay)
+NEXT_PUBLIC_RAZORPAY_KEY_ID=rzp_test_xxx
+RAZORPAY_KEY_SECRET=xxxxxxxxxx
+RAZORPAY_WEBHOOK_SECRET=whsec_xxxxxxxx
+
+# Shipping (Shiprocket)
+SHIPROCKET_EMAIL=admin@yourdomain.com
+SHIPROCKET_PASSWORD=your_password
+```
+
+---
+
+## 📚 Full Setup Guide
+
+See the detailed step-by-step documentation for:
+- Supabase setup (schema, auth, storage, RLS)
+- Firebase / Vercel deployment
+- Razorpay + Shiprocket integration architecture
+
+→ **[View Full Setup Guide](./docs/SETUP.md)** *(or in Antigravity brain: `setup_guide.md`)*
+
+---
+
+## 🔧 Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 15 (App Router) |
+| Language | TypeScript |
+| Styling | Tailwind CSS v4 |
+| State | Zustand (persist middleware) |
+| Database | Supabase (PostgreSQL) |
+| Auth | Supabase Auth |
+| Storage | Supabase Storage |
+| Icons | Lucide React |
+| Payments | Razorpay (ready to wire) |
+| Shipping | Shiprocket (ready to wire) |
+| Deploy | Firebase App Hosting / Vercel |
