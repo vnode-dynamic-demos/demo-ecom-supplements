@@ -28,7 +28,7 @@ export default async function ProductPage({ params }: Props) {
     const { id } = await params;
     const product = await getProductById(id);
     if (!product) notFound();
-    const variants = await getProductVariants(product.id);
+    const variants = await getProductVariants(product.id, product.slug);
 
     const jsonLd = {
         '@context': 'https://schema.org',

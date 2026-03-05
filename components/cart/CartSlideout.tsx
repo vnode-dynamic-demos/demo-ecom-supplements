@@ -84,7 +84,8 @@ export default function CartSlideout() {
                 )}
 
                 {/* GWP teaser: shows when HyperWhey not in cart */}
-                {!items.find(i => i.productId === '1') && (
+                {/* Uses productSlug (stable for both mock IDs and Supabase UUIDs) */}
+                {!items.find(i => i.productSlug === 'hyperwhey-pro-whey-protein') && (
                     <div className="mx-4 mt-3 bg-green-50 border border-green-200 rounded-xl px-4 py-3 flex items-center gap-3">
                         <Gift className="w-5 h-5 text-green-600 flex-shrink-0" />
                         <div>
@@ -93,7 +94,7 @@ export default function CartSlideout() {
                         </div>
                     </div>
                 )}
-                {items.find(i => i.productId === '1') && !items.find(i => i.productId === '3') && (
+                {items.find(i => i.productSlug === 'hyperwhey-pro-whey-protein') && (
                     <div className="mx-4 mt-3 bg-orange-50 border border-orange-200 rounded-xl px-4 py-3 flex items-center gap-3">
                         <Gift className="w-5 h-5 text-orange-500 flex-shrink-0" />
                         <p className="text-orange-700 font-bold text-xs">✅ GWP Unlocked! FREE PureCre added to your order at checkout 🎁</p>

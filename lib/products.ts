@@ -252,13 +252,31 @@ export async function getProductById(idOrSlug: string): Promise<Product | null> 
     return data;
 }
 
+// ─── Slug → mock product ID mapping (for variant fallback) ───────────────────
+const SLUG_TO_MOCK_ID: Record<string, string> = {
+    'hyperwhey-pro-whey-protein': '1',
+    'nitroblast-pre-workout': '2',
+    'purecre-monohydrate': '3',
+};
+
 // ─── Fetch variants for a product ────────────────────────────────────────────
-export async function getProductVariants(productId: string): Promise<ProductVariant[]> {
-    if (!isSupabaseConfigured()) return MOCK_VARIANTS[productId] ?? [];
+export async function getProductVariants(productId: string, productSlug?: string): Promise<ProductVariant[]> {
+    if (!isSupabaseConfigured()) {
+        // In mock mode, productId IS the mock ID ('1', '2', '3')
+        return MOCK_VARIANTS[productId] ?? [];
+    }
     const { data, error } = await getSupabaseClient()!
         .from('product_variants').select('*').eq('product_id', productId).order('flavor, size');
     if (error) { console.error('[getProductVariants]', error.message); return MOCK_VARIANTS[productId] ?? []; }
-    return data ?? [];
+
+    // If Supabase connected but no variants in DB yet (schema not run),
+    // fall back to mock variants using slug mapping so the page still works.
+    if (!data || data.length === 0) {
+        const mockKey = productSlug ? SLUG_TO_MOCK_ID[productSlug] : undefined;
+        return mockKey ? MOCK_VARIANTS[mockKey] : [];
+    }
+
+    return data;
 }
 
 // ─── Fetch all product IDs (for generateStaticParams) ────────────────────────
