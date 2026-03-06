@@ -246,9 +246,24 @@ export async function getProductById(idOrSlug: string): Promise<Product | null> 
     if (!isSupabaseConfigured()) {
         return MOCK_PRODUCTS.find((p) => p.id === idOrSlug || p.slug === idOrSlug) ?? null;
     }
-    const { data, error } = await getSupabaseClient()!
-        .from('products').select('*, category:categories(*)').or(`id.eq.${idOrSlug},slug.eq.${idOrSlug}`).single();
-    if (error) { console.error('[getProductById]', error.message); return MOCK_PRODUCTS.find((p) => p.id === idOrSlug || p.slug === idOrSlug) ?? null; }
+
+    // Check if it's a UUID
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrSlug);
+
+    let query = getSupabaseClient()!.from('products').select('*, category:categories(*)');
+
+    if (isUuid) {
+        query = query.eq('id', idOrSlug);
+    } else {
+        query = query.eq('slug', idOrSlug);
+    }
+
+    const { data, error } = await query.single();
+
+    if (error) {
+        console.error('[getProductById]', error.message);
+        return MOCK_PRODUCTS.find((p) => p.id === idOrSlug || p.slug === idOrSlug) ?? null;
+    }
     return data;
 }
 
