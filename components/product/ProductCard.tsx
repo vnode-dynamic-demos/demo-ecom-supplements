@@ -73,11 +73,11 @@ export default function ProductCard({ product }: ProductCardProps) {
     const hasVariants = true; // In demo, always show "2 Options" CTA variant
 
     return (
-        <Link href={`/product/${product.slug || product.id}`} className="group block">
-            <div className="product-card bg-white rounded-xl border border-gray-100 overflow-hidden h-full flex flex-col">
+        <Link href={`/product/${product.slug || product.id}`} className={`group block h-full ${showVariants ? 'relative z-50' : 'relative z-0'}`}>
+            <div className="product-card bg-white rounded-xl border border-gray-100 h-full flex flex-col transition-all">
 
                 {/* Image area */}
-                <div className="relative bg-gray-50 aspect-square overflow-hidden">
+                <div className="relative bg-gray-50 aspect-square overflow-hidden rounded-t-[11px]">
                     {product.image_url ? (
                         <Image
                             src={product.image_url}
