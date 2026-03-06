@@ -129,48 +129,50 @@ export default function ProductClient({ product, variants }: ProductClientProps)
                 </div>
 
                 {/* ── Main image ───────────────────────────────────────── */}
-                <div className="relative">
-                    <div className="relative aspect-square bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm">
-                        <Image
-                            src={images[activeImage]?.url ?? ''}
-                            alt={images[activeImage]?.alt ?? product.name}
-                            fill
-                            className="object-contain p-6"
-                            priority
-                            sizes="(max-width: 1024px) 100vw, 45vw"
-                        />
+                <div className="relative flex flex-col lg:items-center w-full">
+                    <div className="w-full max-w-[500px] relative">
+                        <div className="relative w-full aspect-square bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
+                            <Image
+                                src={images[activeImage]?.url ?? ''}
+                                alt={images[activeImage]?.alt ?? product.name}
+                                fill
+                                className="object-contain p-6"
+                                priority
+                                sizes="(max-width: 1024px) 100vw, 500px"
+                            />
 
-                        {/* Social proof badge */}
-                        <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm border border-gray-100 rounded-lg px-3 py-1.5 flex items-center gap-1.5 shadow-sm">
-                            <span className="text-[#1a237e] text-xs font-bold">📈 500+ also bought this recently</span>
+                            {/* Social proof badge */}
+                            <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm border border-gray-100 rounded-lg px-3 py-1.5 flex items-center gap-1.5 shadow-sm">
+                                <span className="text-[#1a237e] text-xs font-bold">📈 500+ also bought this recently</span>
+                            </div>
+
+                            {/* Wishlist + Share */}
+                            <div className="absolute top-3 right-3 flex flex-col gap-2">
+                                <button
+                                    onClick={() => toggle(product)}
+                                    className="p-2 bg-white border border-gray-100 rounded-full shadow-sm hover:border-red-300 transition-all"
+                                >
+                                    <Heart className={`w-4 h-4 transition-colors ${isWishlisted(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
+                                </button>
+                                <button className="p-2 bg-white border border-gray-100 rounded-full shadow-sm text-gray-400 hover:text-[#1a237e] transition-all">
+                                    <Share2 className="w-4 h-4" />
+                                </button>
+                            </div>
                         </div>
 
-                        {/* Wishlist + Share */}
-                        <div className="absolute top-3 right-3 flex flex-col gap-2">
-                            <button
-                                onClick={() => toggle(product)}
-                                className="p-2 bg-white border border-gray-100 rounded-full shadow-sm hover:border-red-300 transition-all"
-                            >
-                                <Heart className={`w-4 h-4 transition-colors ${isWishlisted(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
-                            </button>
-                            <button className="p-2 bg-white border border-gray-100 rounded-full shadow-sm text-gray-400 hover:text-[#1a237e] transition-all">
-                                <Share2 className="w-4 h-4" />
-                            </button>
+                        {/* Mobile thumbnail strip */}
+                        <div className="flex gap-2 mt-3 overflow-x-auto pb-1 lg:hidden w-full">
+                            {images.map((img, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => setActiveImage(i)}
+                                    className={`relative w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${i === activeImage ? 'border-[#1a237e]' : 'border-gray-200'
+                                        }`}
+                                >
+                                    <Image src={img.url} alt="" fill className="object-contain p-1" sizes="64px" />
+                                </button>
+                            ))}
                         </div>
-                    </div>
-
-                    {/* Mobile thumbnail strip */}
-                    <div className="flex gap-2 mt-3 overflow-x-auto pb-1 lg:hidden">
-                        {images.map((img, i) => (
-                            <button
-                                key={i}
-                                onClick={() => setActiveImage(i)}
-                                className={`relative w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${i === activeImage ? 'border-[#1a237e]' : 'border-gray-200'
-                                    }`}
-                            >
-                                <Image src={img.url} alt="" fill className="object-contain p-1" sizes="64px" />
-                            </button>
-                        ))}
                     </div>
                 </div>
 
@@ -361,6 +363,6 @@ export default function ProductClient({ product, variants }: ProductClientProps)
                     </div>
                 )}
             </div>
-        </div>
+        </div >
     );
 }
