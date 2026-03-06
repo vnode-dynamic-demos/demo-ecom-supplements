@@ -201,20 +201,20 @@ We skip the flavouring, fillers, and marketing fluff. PureCre is creatine monohy
 
 const MOCK_VARIANTS: Record<string, ProductVariant[]> = {
     '1': [
-        { id: 'v1', product_id: '1', flavor: 'Chocolate Fudge', size: '1kg', price_adjustment: 0, stock: 150, sku: 'HWP-CHO-1KG', created_at: '' },
-        { id: 'v2', product_id: '1', flavor: 'Chocolate Fudge', size: '2kg', price_adjustment: 700, stock: 90, sku: 'HWP-CHO-2KG', created_at: '' },
-        { id: 'v3', product_id: '1', flavor: 'Vanilla Ice Cream', size: '1kg', price_adjustment: 0, stock: 120, sku: 'HWP-VAN-1KG', created_at: '' },
-        { id: 'v4', product_id: '1', flavor: 'Vanilla Ice Cream', size: '2kg', price_adjustment: 700, stock: 60, sku: 'HWP-VAN-2KG', created_at: '' },
-        { id: 'v5', product_id: '1', flavor: 'Strawberry Bliss', size: '1kg', price_adjustment: 100, stock: 80, sku: 'HWP-STR-1KG', created_at: '' },
+        { id: 'v1', product_id: '1', flavor: 'Chocolate Fudge', size: '1kg (2.2lb)', price_adjustment: 0, stock: 150, sku: 'HWP-CHO-1KG', created_at: '' },
+        { id: 'v2', product_id: '1', flavor: 'Chocolate Fudge', size: '2kg (4.4lb)', price_adjustment: 700, stock: 90, sku: 'HWP-CHO-2KG', created_at: '' },
+        { id: 'v3', product_id: '1', flavor: 'Vanilla Ice Cream', size: '1kg (2.2lb)', price_adjustment: 0, stock: 120, sku: 'HWP-VAN-1KG', created_at: '' },
+        { id: 'v4', product_id: '1', flavor: 'Vanilla Ice Cream', size: '2kg (4.4lb)', price_adjustment: 700, stock: 60, sku: 'HWP-VAN-2KG', created_at: '' },
+        { id: 'v5', product_id: '1', flavor: 'Strawberry Bliss', size: '1kg (2.2lb)', price_adjustment: 100, stock: 80, sku: 'HWP-STR-1KG', created_at: '' },
     ],
     '2': [
-        { id: 'v6', product_id: '2', flavor: 'Blue Raspberry', size: '300g', price_adjustment: 0, stock: 200, sku: 'NBL-BLU-300G', created_at: '' },
-        { id: 'v7', product_id: '2', flavor: 'Watermelon', size: '300g', price_adjustment: 0, stock: 150, sku: 'NBL-WAT-300G', created_at: '' },
-        { id: 'v8', product_id: '2', flavor: 'Blue Raspberry', size: '600g', price_adjustment: 500, stock: 100, sku: 'NBL-BLU-600G', created_at: '' },
+        { id: 'v6', product_id: '2', flavor: 'Blue Raspberry', size: '300g (0.66lb)', price_adjustment: 0, stock: 200, sku: 'NBL-BLU-300G', created_at: '' },
+        { id: 'v7', product_id: '2', flavor: 'Watermelon', size: '300g (0.66lb)', price_adjustment: 0, stock: 150, sku: 'NBL-WAT-300G', created_at: '' },
+        { id: 'v8', product_id: '2', flavor: 'Blue Raspberry', size: '600g (1.32lb)', price_adjustment: 500, stock: 100, sku: 'NBL-BLU-600G', created_at: '' },
     ],
     '3': [
-        { id: 'v9', product_id: '3', flavor: 'Unflavored', size: '250g', price_adjustment: 0, stock: 300, sku: 'PCR-UNF-250G', created_at: '' },
-        { id: 'v10', product_id: '3', flavor: 'Unflavored', size: '500g', price_adjustment: 250, stock: 200, sku: 'PCR-UNF-500G', created_at: '' },
+        { id: 'v9', product_id: '3', flavor: 'Unflavored', size: '250g (0.55lb)', price_adjustment: 0, stock: 300, sku: 'PCR-UNF-250G', created_at: '' },
+        { id: 'v10', product_id: '3', flavor: 'Unflavored', size: '500g (1.1lb)', price_adjustment: 250, stock: 200, sku: 'PCR-UNF-500G', created_at: '' },
     ],
 };
 
