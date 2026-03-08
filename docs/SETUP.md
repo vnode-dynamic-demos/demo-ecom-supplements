@@ -267,6 +267,16 @@ Authentication
         └── Rate Limits          → Brute-force protection settings
 ```
 
+#### 6d — Custom SMTP (Professional Emails)
+
+By default, verification emails come from `noreply@mail.app.supabase.io`. To send them from your own domain (e.g., `welcome@vnodenutra.com`):
+
+1. Go to your Supabase Dashboard
+2. Navigate to **Authentication -> Email Templates -> Custom SMTP**
+3. Plug in any generic Email Service Provider API key (like Resend, Sendgrid, or AWS SES). 
+
+Once you supply your custom SMTP credentials, Supabase routes all the Auth emails natively through your company's official domain!
+
 ### Step 7 — Storage (Product Images)
 
 1. Supabase → **Storage → New Bucket** → Name: `product-images` → **Public bucket** ✓
