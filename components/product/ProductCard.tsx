@@ -91,7 +91,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className={`product-card group flex flex-col h-full bg-white rounded-xl border border-gray-100 transition-all ${showVariants ? 'relative z-50' : 'relative z-0'}`}>
 
             {/* Image area */}
-            <div className="relative bg-gray-50 aspect-square overflow-hidden rounded-t-[11px]">
+            <div className="relative bg-gray-50 aspect-square overflow-hidden rounded-t-[11px] shrink-0">
                 <Link href={`/product/${product.slug || product.id}`} className="block w-full h-full">
                     {product.image_url ? (
                         <Image
