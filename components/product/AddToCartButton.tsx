@@ -34,6 +34,7 @@ export default function AddToCartButton({ product, selectedVariant, finalPrice }
             flavor: selectedVariant.flavor,
             size: selectedVariant.size,
             price: finalPrice,
+            maxStock: selectedVariant.stock,
         });
 
         setState('success');

@@ -51,11 +51,18 @@ export const useCartStore = create<ExtendedCartState>()(
             coupon: null,
 
             addItem: (newItem) => {
+                const max = newItem.maxStock ?? 99; // Default limit
                 const existing = get().items.find((i) => i.variantId === newItem.variantId);
+
                 if (existing) {
+                    const nextQ = existing.quantity + 1;
+                    if (nextQ > max) {
+                        alert(`Sorry, only ${max} units available in stock.`);
+                        return;
+                    }
                     set((state) => ({
                         items: state.items.map((i) =>
-                            i.variantId === newItem.variantId ? { ...i, quantity: i.quantity + 1 } : i
+                            i.variantId === newItem.variantId ? { ...i, quantity: nextQ } : i
                         ),
                     }));
                 } else {
@@ -94,7 +101,17 @@ export const useCartStore = create<ExtendedCartState>()(
             },
 
             updateQuantity: (variantId, quantity) => {
+                const item = get().items.find(i => i.variantId === variantId);
+                if (!item) return;
+
                 if (quantity <= 0) { get().removeItem(variantId); return; }
+
+                const max = item.maxStock ?? 99;
+                if (quantity > max) {
+                    alert(`Sorry, only ${max} units available in stock.`);
+                    quantity = max;
+                }
+
                 set((state) => ({
                     items: state.items.map((i) =>
                         i.variantId === variantId ? { ...i, quantity } : i

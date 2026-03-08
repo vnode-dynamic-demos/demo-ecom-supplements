@@ -98,6 +98,7 @@ export interface CartItem {
     size: string;
     price: number;   // final price (base_price + price_adjustment)
     quantity: number;
+    maxStock?: number; // Added to prevent checking out more than available
     isFree?: boolean; // For GWP free items
 }
 

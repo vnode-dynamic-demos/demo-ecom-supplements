@@ -428,3 +428,96 @@ For a solo developer or 2–3 person team managing one store, **the free plan is
 - [ ] Rate-limiting enabled on `/admin/login` (Cloudflare or Next.js)
 - [ ] Admin login connects to Supabase Auth (not localStorage session)
 - [ ] HTTPS enforced (automatic on Vercel/Firebase/Cloudflare)
+
+---
+
+## Vercel Environment Variables — What to Add and Why
+
+Go to **Vercel → Project → Settings → Environment Variables** and add these:
+
+| Variable | Value | Safe to expose? |
+|---|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | `https://xxxx.supabase.co` | ✅ Yes — just a URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `sb_publishable_...` | ✅ Yes — designed to be public |
+| `SUPABASE_SERVICE_KEY` | `sb_secret_...` | ❌ No — server only, never NEXT_PUBLIC_ |
+| `ADMIN_IP_RESTRICTION` | `disabled` (testing) or remove (production) | ✅ Server only |
+| `ALLOWED_ADMIN_IPS` | `203.x.x.x,100.x.x.x` | ✅ Server only |
+
+### Why is `NEXT_PUBLIC_SUPABASE_ANON_KEY` safe in the browser?
+
+The `NEXT_PUBLIC_` prefix in Next.js means the variable gets bundled into the browser JavaScript — anyone can see it in DevTools. This is **intentional and safe** for the anon/publishable key because:
+
+- Supabase named it "publishable" for a reason — it is meant to be public
+- It can **only** read/write data that your **Row Level Security (RLS) policies** allow
+- Customers can only see their own orders (`auth.uid() = customer_id` policy)
+- It **cannot** bypass RLS or delete/modify protected data
+- This is how every Supabase app works — the anon key is always in the browser
+
+The **`SUPABASE_SERVICE_KEY`** is the dangerous one — it bypasses all RLS, can delete anything, and must **never** have the `NEXT_PUBLIC_` prefix. In Vercel, add it as `SUPABASE_SERVICE_KEY` (no prefix) — Next.js will keep it server-side only.
+
+---
+
+## IP Restriction Lifecycle — Testing to Production
+
+### Phase 1: Initial Setup / Testing
+**When:** First deploying to Vercel, setting up Supabase, testing the admin panel.
+
+**What to set in Vercel env vars:**
+```
+ADMIN_IP_RESTRICTION = disabled
+```
+
+**Why:** You don't know your exact IP yet, and you need to freely access `/admin` from any device to verify everything works. The admin login password (`vnode@admin`) still protects the actual admin content.
+
+**Risk:** Anyone who knows your Vercel URL can reach the `/admin/login` page. The login credential is still required to get in.
+
+---
+
+### Phase 2: Enable Security Before Sharing the URL Publicly
+
+Once the site is working and you're ready to share the customer URL publicly, enable IP restriction so `/admin` is invisible to random visitors.
+
+**Step 1 — Find your IP(s):**
+- Go to [whatismyip.com](https://whatismyip.com) on each device you use for admin work
+- Or install Tailscale (recommended) — no need to know your IP at all
+
+**Step 2 — Update Vercel env vars:**
+
+Option A (specific IPs — simpler):
+```
+ADMIN_IP_RESTRICTION  →  [delete this variable entirely, or leave blank]
+ALLOWED_ADMIN_IPS     →  203.0.113.10,198.51.100.25
+```
+*(comma-separated, no spaces, one entry per device/location)*
+
+Option B (Tailscale — recommended, no IP management):
+```
+ADMIN_IP_RESTRICTION  →  [delete this variable entirely]
+ALLOWED_ADMIN_IPS     →  [leave empty — Tailscale IPs auto-allowed via middleware]
+```
+The `middleware.ts` already contains: `if (ip.startsWith('100.')) return true` — all Tailscale devices on your account are automatically allowed.
+
+**Step 3 — Redeploy:**
+After changing env vars in Vercel, trigger a redeploy:
+- Vercel Dashboard → Deployments → three dots (⋯) on latest → **Redeploy**
+- Or push a new commit — Vercel auto-deploys
+
+**Step 4 — Test:**
+- Open an incognito window → go to `https://your-site.vercel.app/admin`
+- Without Tailscale/whitelisted IP → you should see the 🔒 "Access Restricted" page
+- With Tailscale running → admin loads normally ✅
+
+---
+
+### Phase 3: Production / Live Store
+
+When the store goes live with real customers:
+
+- [ ] `ADMIN_IP_RESTRICTION` variable removed (or left empty) — restriction active
+- [ ] `ALLOWED_ADMIN_IPS` contains only your real IPs (or Tailscale used instead)
+- [ ] Admin password changed from default `vnode@admin` to a strong password
+- [ ] Supabase Auth integrated for admin login (replaces localStorage session)
+- [ ] Rate limiting enabled on `/admin/login`
+
+> **Golden rule:** The customer storefront (`/`, `/products`, `/checkout`) is always 100% open. Only `/admin/*` is restricted. Your shoppers never need a VPN.
+
