@@ -123,23 +123,29 @@ function FilterSection({ title, children, defaultOpen = true }: { title: string;
 function ProductsListingContent() {
     const searchParams = useSearchParams();
     const [sort, setSort] = useState<SortKey>('recommended');
-    const [search, setSearch] = useState(searchParams.get('search') || '');
+    const [search, setSearch] = useState('');
     const [filters, setFilters] = useState<FilterState>({ brands: [], categories: [], priceMax: 10000, minRating: 0 });
     const [mobileSidebar, setMobileSidebar] = useState(false);
 
-    // Sync URL search to local state
-    useEffect(() => {
-        const query = searchParams.get('search');
-        if (query !== null) setSearch(query);
-    }, [searchParams]);
+    const searchParam = searchParams.get('search');
+    const catParam = searchParams.get('category');
 
-    // Apply URL category param
+    // Sync URL search to local state (triggered when Navbar search is submitted)
     useEffect(() => {
-        const cat = searchParams.get('category');
-        if (cat && !filters.categories.includes(cat)) {
-            setFilters(f => ({ ...f, categories: [...f.categories, cat] }));
+        if (searchParam !== null) {
+            setSearch(searchParam);
+            // Reset filters to give a broad search result for the global query
+            setFilters({ brands: [], categories: [], priceMax: 10000, minRating: 0 });
         }
-    }, [searchParams]);
+    }, [searchParam]);
+
+    // Apply URL category param (triggered when Navbar category link is clicked)
+    useEffect(() => {
+        if (catParam !== null) {
+            setSearch(''); // Clear search when browsing a specific category
+            setFilters({ brands: [], categories: [`cat-${catParam}`], priceMax: 10000, minRating: 0 });
+        }
+    }, [catParam]);
 
     const toggleBrand = (b: string) =>
         setFilters(f => ({ ...f, brands: f.brands.includes(b) ? f.brands.filter(x => x !== b) : [...f.brands, b] }));

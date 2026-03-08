@@ -5,6 +5,7 @@ import { useCartStore } from '@/store/cartStore';
 import { ShoppingCart, Search, User, Heart, ChevronDown, Menu, X, Dumbbell } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import type { Product } from '@/types';
 
 const CATEGORIES = [
     { label: 'Protein', href: '/products?category=protein' },
@@ -28,9 +29,14 @@ export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [searchQuery, setSearch] = useState('');
+    const [searchResults, setSearchResults] = useState<Product[]>([]);
+    const [isSearching, setIsSearching] = useState(false);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+
     const [brandOpen, setBrandOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
     const brandRef = useRef<HTMLDivElement>(null);
+    const searchRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => { setMounted(true); }, []);
     useEffect(() => {
@@ -40,11 +46,44 @@ export default function Navbar() {
     }, []);
     useEffect(() => {
         const handler = (e: MouseEvent) => {
-            if (brandRef.current && !brandRef.current.contains(e.target as Node)) setBrandOpen(false);
+            if (brandRef.current && !brandRef.current.contains(e.target as Node)) {
+                setBrandOpen(false);
+            }
+            if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+                setShowSuggestions(false);
+            }
         };
         document.addEventListener('mousedown', handler);
         return () => document.removeEventListener('mousedown', handler);
     }, []);
+
+    // Intelligent Search Auto-complete
+    useEffect(() => {
+        const fetchSuggestions = async () => {
+            if (searchQuery.trim().length < 2) {
+                setSearchResults([]);
+                return;
+            }
+            setIsSearching(true);
+            try {
+                const { getAllProducts } = await import('@/lib/products');
+                const products = await getAllProducts();
+                const q = searchQuery.toLowerCase();
+                const matched = products.filter(p =>
+                    p.name.toLowerCase().includes(q) ||
+                    (p.brand?.name && p.brand.name.toLowerCase().includes(q))
+                ).slice(0, 5); // top 5 results
+                setSearchResults(matched);
+            } catch (error) {
+                console.error('Search error:', error);
+            } finally {
+                setIsSearching(false);
+            }
+        };
+
+        const debounce = setTimeout(fetchSuggestions, 300);
+        return () => clearTimeout(debounce);
+    }, [searchQuery]);
 
     const count = mounted ? totalItems() : 0;
 
@@ -99,14 +138,19 @@ export default function Navbar() {
                     </div>
 
                     {/* Search bar */}
-                    <div className="flex-1 relative">
+                    <div className="flex-1 relative" ref={searchRef}>
                         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                         <input
                             type="text"
                             value={searchQuery}
-                            onChange={e => setSearch(e.target.value)}
+                            onFocus={() => { if (searchQuery.trim().length >= 2) setShowSuggestions(true) }}
+                            onChange={e => {
+                                setSearch(e.target.value);
+                                setShowSuggestions(true);
+                            }}
                             onKeyDown={e => {
                                 if (e.key === 'Enter' && searchQuery.trim() !== '') {
+                                    setShowSuggestions(false);
                                     router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
                                     setSearch(''); // Optional: clear search after submission
                                     setMobileOpen(false); // Close mobile menu if open
@@ -115,6 +159,48 @@ export default function Navbar() {
                             placeholder="Search for Proteins, Vitamins, Brands..."
                             className="w-full bg-gray-50 border border-gray-200 rounded-full pl-10 pr-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#1a237e] focus:bg-white transition-all"
                         />
+
+                        {/* Auto-complete Suggestions Dropdown */}
+                        {showSuggestions && searchQuery.trim().length >= 2 && (
+                            <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50">
+                                {isSearching ? (
+                                    <div className="p-4 text-center text-sm text-gray-500">Searching...</div>
+                                ) : searchResults.length > 0 ? (
+                                    <div className="divide-y divide-gray-50">
+                                        {searchResults.map(product => (
+                                            <Link
+                                                key={product.id}
+                                                href={`/product/${product.slug || product.id}`}
+                                                onClick={() => { setShowSuggestions(false); setSearch(''); }}
+                                                className="flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors"
+                                            >
+                                                <div className="w-10 h-10 bg-gray-100 rounded flex-shrink-0 relative overflow-hidden">
+                                                    {product.image_url && <img src={product.image_url} alt="" className="w-full h-full object-contain p-1" />}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-semibold text-gray-800 truncate">{product.name}</p>
+                                                    <p className="text-xs text-gray-500 truncate">{product.brand?.name}</p>
+                                                </div>
+                                                <div className="font-bold text-[#1a237e] text-sm whitespace-nowrap">
+                                                    ₹{product.base_price.toLocaleString('en-IN')}
+                                                </div>
+                                            </Link>
+                                        ))}
+                                        <button
+                                            onClick={() => {
+                                                setShowSuggestions(false);
+                                                router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+                                            }}
+                                            className="w-full p-3 text-center text-sm font-bold text-[#1a237e] hover:bg-[#1a237e] hover:text-white transition-colors"
+                                        >
+                                            View all {searchResults.length} results →
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="p-4 text-center text-sm text-gray-500">No products found matching "{searchQuery}"</div>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     {/* Actions */}
