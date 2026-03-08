@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useCartStore } from '@/store/cartStore';
 import { ShoppingCart, Search, User, Heart, ChevronDown, Menu, X, Dumbbell } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 
 const CATEGORIES = [
     { label: 'Protein', href: '/products?category=protein' },
@@ -22,6 +23,7 @@ const BRANDS_PREVIEW = [
 ];
 
 export default function Navbar() {
+    const router = useRouter();
     const { toggleCart, totalItems } = useCartStore();
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -103,6 +105,13 @@ export default function Navbar() {
                             type="text"
                             value={searchQuery}
                             onChange={e => setSearch(e.target.value)}
+                            onKeyDown={e => {
+                                if (e.key === 'Enter' && searchQuery.trim() !== '') {
+                                    router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+                                    setSearch(''); // Optional: clear search after submission
+                                    setMobileOpen(false); // Close mobile menu if open
+                                }
+                            }}
                             placeholder="Search for Proteins, Vitamins, Brands..."
                             className="w-full bg-gray-50 border border-gray-200 rounded-full pl-10 pr-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#1a237e] focus:bg-white transition-all"
                         />

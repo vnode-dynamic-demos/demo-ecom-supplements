@@ -63,18 +63,38 @@ export default function ProductCard({ product }: ProductCardProps) {
 
     const handleAddToCart = async (e: React.MouseEvent) => {
         e.preventDefault();
-        if (adding) return;
+        if (adding || (product.stock ?? 1) <= 0) return;
         setAdding(true);
-        await new Promise(r => setTimeout(r, 300));
+
+        // Fetch variants to ensure at least one is truly in stock before adding
+        let finalVariant: ProductVariant | null = null;
+        try {
+            const { getProductVariants } = await import('@/lib/products');
+            const v = await getProductVariants(product.id, product.slug);
+            finalVariant = v.find((variant) => variant.stock > 0) || null;
+
+            if (v.length > 0 && !finalVariant) {
+                // All variants are actually out of stock in the DB despite parent stock! 
+                alert('Sorry, all options for this product are currently out of stock.');
+                setAdding(false);
+                return; // Block cart addition
+            }
+        } catch (error) {
+            console.error('Failed to fetch variants', error);
+        }
+
+        await new Promise(r => setTimeout(r, 200)); // smooth UI delay
+
         addItem({
-            variantId: `${product.id}-default`,
+            variantId: finalVariant ? finalVariant.id : `${product.id}-default`,
             productId: product.id,
             productName: product.name,
             productSlug: product.slug,
             imageUrl: product.image_url,
-            flavor: 'Default',
-            size: '1kg',
-            price: product.base_price,
+            flavor: finalVariant ? finalVariant.flavor : 'Default',
+            size: finalVariant ? finalVariant.size : '1kg',
+            price: finalVariant ? product.base_price + finalVariant.price_adjustment : product.base_price,
+            maxStock: finalVariant ? finalVariant.stock : product.stock,
         });
         openCart();
         setTimeout(() => setAdding(false), 1500);
@@ -88,7 +108,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     const hasVariants = true; // In demo, always show "2 Options" CTA variant
 
     return (
-        <div className={`product-card group flex flex-col h-full bg-white rounded-xl border border-gray-100 transition-all ${showVariants ? 'relative z-50' : 'relative z-0'}`}>
+        <div className={`product-card group flex flex-col h-full bg-white rounded-xl border border-gray-100 transition-all ${showVariants ? 'relative z-20' : 'relative z-0'}`}>
 
             {/* Image area */}
             <div className="relative bg-gray-50 aspect-square overflow-hidden rounded-t-[11px] flex-none">
@@ -238,7 +258,45 @@ export default function ProductCard({ product }: ProductCardProps) {
                                             <span className="w-3 h-3 border-2 border-gray-300 border-t-[#1a237e] rounded-full animate-spin" /> Loading...
                                         </div>
                                     ) : variants.length === 0 ? (
-                                        <div className="py-4 text-center text-xs text-red-500">Out of stock</div>
+                                        <div className="space-y-1">
+                                            <button
+                                                onClick={async (e) => {
+                                                    e.preventDefault();
+                                                    if ((product.stock ?? 1) <= 0) return;
+                                                    setShowVariants(false);
+                                                    setAdding(true);
+                                                    await new Promise(r => setTimeout(r, 300));
+                                                    addItem({
+                                                        variantId: `${product.id}-default`,
+                                                        productId: product.id,
+                                                        productName: product.name,
+                                                        productSlug: product.slug,
+                                                        imageUrl: product.image_url,
+                                                        flavor: 'Default',
+                                                        size: '1kg',
+                                                        price: product.base_price,
+                                                        maxStock: product.stock,
+                                                    });
+                                                    openCart();
+                                                    setTimeout(() => setAdding(false), 1500);
+                                                }}
+                                                disabled={(product.stock ?? 1) <= 0}
+                                                className={`w-full text-left p-2 rounded-lg text-xs transition-colors flex flex-col gap-0.5 ${(product.stock ?? 1) > 0 ? 'hover:bg-[#f0f4ff] hover:text-[#1a237e]' : 'opacity-50 cursor-not-allowed bg-gray-50'}`}
+                                            >
+                                                <div className="flex justify-between items-start">
+                                                    <span className="font-bold">Standard Config</span>
+                                                    <span className="font-bold whitespace-nowrap">₹{product.base_price.toLocaleString('en-IN')}</span>
+                                                </div>
+                                                <div className="flex justify-between items-center text-[10px] text-gray-500">
+                                                    <span>Base item</span>
+                                                    {(product.stock ?? 1) <= 0 ? (
+                                                        <span className="text-red-500 font-semibold">Out of stock</span>
+                                                    ) : (product.stock ?? 99) < 10 ? (
+                                                        <span className="text-orange-500 font-semibold">Only {product.stock} left</span>
+                                                    ) : null}
+                                                </div>
+                                            </button>
+                                        </div>
                                     ) : (
                                         <div className="space-y-1">
                                             {variants.map(v => (

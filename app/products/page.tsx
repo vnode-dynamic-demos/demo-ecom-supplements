@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import ProductCard from '@/components/product/ProductCard';
 import { Search, SlidersHorizontal, ChevronDown, ChevronUp, X } from 'lucide-react';
 import type { Product } from '@/types';
@@ -119,17 +120,35 @@ function FilterSection({ title, children, defaultOpen = true }: { title: string;
     );
 }
 
-export default function ProductsListingPage() {
+function ProductsListingContent() {
+    const searchParams = useSearchParams();
     const [sort, setSort] = useState<SortKey>('recommended');
-    const [search, setSearch] = useState('');
+    const [search, setSearch] = useState(searchParams.get('search') || '');
     const [filters, setFilters] = useState<FilterState>({ brands: [], categories: [], priceMax: 10000, minRating: 0 });
     const [mobileSidebar, setMobileSidebar] = useState(false);
+
+    // Sync URL search to local state
+    useEffect(() => {
+        const query = searchParams.get('search');
+        if (query !== null) setSearch(query);
+    }, [searchParams]);
+
+    // Apply URL category param
+    useEffect(() => {
+        const cat = searchParams.get('category');
+        if (cat && !filters.categories.includes(cat)) {
+            setFilters(f => ({ ...f, categories: [...f.categories, cat] }));
+        }
+    }, [searchParams]);
 
     const toggleBrand = (b: string) =>
         setFilters(f => ({ ...f, brands: f.brands.includes(b) ? f.brands.filter(x => x !== b) : [...f.brands, b] }));
     const toggleCategory = (c: string) =>
         setFilters(f => ({ ...f, categories: f.categories.includes(c) ? f.categories.filter(x => x !== c) : [...f.categories, c] }));
-    const clearFilters = () => setFilters({ brands: [], categories: [], priceMax: 10000, minRating: 0 });
+    const clearFilters = () => {
+        setFilters({ brands: [], categories: [], priceMax: 10000, minRating: 0 });
+        setSearch('');
+    };
 
     const filtered = useMemo(() => {
         let result = ALL_PRODUCTS;
@@ -365,5 +384,13 @@ export default function ProductsListingPage() {
                 </div>
             )}
         </div>
+    );
+}
+
+export default function ProductsListingPage() {
+    return (
+        <Suspense fallback={<div className="p-10 text-center font-bold text-gray-400">Loading products...</div>}>
+            <ProductsListingContent />
+        </Suspense>
     );
 }
