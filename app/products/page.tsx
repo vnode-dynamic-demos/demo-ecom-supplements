@@ -6,13 +6,7 @@ import ProductCard from '@/components/product/ProductCard';
 import { Search, SlidersHorizontal, ChevronDown, ChevronUp, X } from 'lucide-react';
 import type { Product } from '@/types';
 
-// ── Mock multi-brand product catalog is now loaded dynamically ──────────────
-const CATEGORIES = [
-    { label: 'Protein', value: 'cat-protein' },
-    { label: 'Pre-Workout', value: 'cat-preworkout' },
-    { label: 'Creatine', value: 'cat-creatine' },
-    { label: 'Vitamins', value: 'cat-vitamins' },
-];
+// ── Mock and Database multi-brand product catalog is loaded dynamically ──
 
 type SortKey = 'recommended' | 'price-asc' | 'price-desc' | 'rating' | 'newest';
 
@@ -58,9 +52,11 @@ function ProductsListingContent() {
     const searchParam = searchParams.get('search');
     const catParam = searchParams.get('category');
 
+    const { replace } = require('next/navigation') as { replace: (url: string) => void };
+
     // Sync URL search to local state (triggered when Navbar search is submitted)
     useEffect(() => {
-        if (searchParam !== null) {
+        if (searchParam) {
             setSearch(searchParam);
             // Reset filters to give a broad search result for the global query
             setFilters({ brands: [], categories: [], priceMax: 10000, minRating: 0 });
@@ -69,11 +65,24 @@ function ProductsListingContent() {
 
     // Apply URL category param (triggered when Navbar category link is clicked)
     useEffect(() => {
-        if (catParam !== null) {
+        if (catParam) {
             setSearch(''); // Clear search when browsing a specific category
-            setFilters({ brands: [], categories: [`cat-${catParam}`], priceMax: 10000, minRating: 0 });
+            setFilters({ brands: [], categories: [catParam], priceMax: 10000, minRating: 0 });
         }
     }, [catParam]);
+
+    const CATEGORIES = useMemo(() => {
+        const cats = new Map<string, string>(); // slug -> name
+        allProducts.forEach(p => {
+            if (p.category) {
+                cats.set(p.category.slug, p.category.name);
+            } else if (p.category_id) {
+                const slug = p.category_id.replace('cat-', '');
+                cats.set(slug, slug.charAt(0).toUpperCase() + slug.slice(1));
+            }
+        });
+        return Array.from(cats.entries()).map(([slug, label]) => ({ label, value: slug }));
+    }, [allProducts]);
 
     const toggleBrand = (b: string) =>
         setFilters(f => ({ ...f, brands: f.brands.includes(b) ? f.brands.filter(x => x !== b) : [...f.brands, b] }));
@@ -82,16 +91,24 @@ function ProductsListingContent() {
     const clearFilters = () => {
         setFilters({ brands: [], categories: [], priceMax: 10000, minRating: 0 });
         setSearch('');
+        if (searchParam || catParam) {
+            replace('/products');
+        }
     };
 
     const filtered = useMemo(() => {
         let result = allProducts;
         if (search) result = result.filter(p => p.name.toLowerCase().includes(search.toLowerCase()) || p.brand?.name.toLowerCase().includes(search.toLowerCase()));
         if (filters.brands.length) result = result.filter(p => filters.brands.includes(p.brand?.name ?? ''));
-        if (filters.categories.length) result = result.filter(p => filters.categories.includes(p.category_id ?? ''));
+        if (filters.categories.length) {
+            result = result.filter(p => {
+                const slug = p.category?.slug ?? p.category_id?.replace('cat-', '') ?? '';
+                return filters.categories.includes(slug);
+            });
+        }
         result = result.filter(p => p.base_price <= filters.priceMax && p.rating >= filters.minRating);
         return result;
-    }, [search, filters]);
+    }, [search, filters, allProducts]);
 
     const sorted = useMemo(() => {
         const arr = [...filtered];
@@ -137,7 +154,7 @@ function ProductsListingContent() {
                                 className="rounded border-gray-300 text-[#1a237e] focus:ring-[#1a237e]"
                             />
                             <span className="text-sm text-gray-700">{cat.label}</span>
-                            <span className="ml-auto text-xs text-gray-400">({allProducts.filter(p => p.category_id === cat.value).length})</span>
+                            <span className="ml-auto text-xs text-gray-400">({allProducts.filter(p => (p.category?.slug ?? p.category_id?.replace('cat-', '')) === cat.value).length})</span>
                         </label>
                     ))}
                 </div>
