@@ -97,7 +97,7 @@ const MOCK_PRODUCTS: Product[] = [
 
 **The Tingle is Real:**
 The beta-alanine tingles tell you it's working. Most users feel the full effect within 20–30 minutes.`,
-        category_id: 'cat-2',
+        category_id: 'cat-preworkout',
         base_price: 1799,
         mrp: 2499,
         image_url: '/products/nitroblast.png',
@@ -155,7 +155,7 @@ Generic creatine can contain contaminants like dihydrotriazine (DHT), a potentia
 
 **The V-Node Advantage:**
 We skip the flavouring, fillers, and marketing fluff. PureCre is creatine monohydrate — nothing added, nothing hidden. Mix it into anything. It dissolves completely and tastes like nothing.`,
-        category_id: 'cat-1',
+        category_id: 'cat-creatine',
         base_price: 999,
         mrp: 1299,
         image_url: '/products/purecre.png',

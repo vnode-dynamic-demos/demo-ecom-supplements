@@ -60,6 +60,8 @@ function ProductsListingContent() {
             setSearch(searchParam);
             // Reset filters to give a broad search result for the global query
             setFilters({ brands: [], categories: [], priceMax: 10000, minRating: 0 });
+        } else {
+            setSearch('');
         }
     }, [searchParam]);
 
@@ -68,6 +70,8 @@ function ProductsListingContent() {
         if (catParam) {
             setSearch(''); // Clear search when browsing a specific category
             setFilters({ brands: [], categories: [catParam], priceMax: 10000, minRating: 0 });
+        } else {
+            setFilters(f => ({ ...f, categories: [] }));
         }
     }, [catParam]);
 
