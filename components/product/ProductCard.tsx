@@ -91,7 +91,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className={`product-card group flex flex-col h-full bg-white rounded-xl border border-gray-100 transition-all ${showVariants ? 'relative z-50' : 'relative z-0'}`}>
 
             {/* Image area */}
-            <div className="relative bg-gray-50 aspect-square overflow-hidden rounded-t-[11px] shrink-0">
+            <div className="relative bg-gray-50 aspect-square overflow-hidden rounded-t-[11px] flex-none">
                 <Link href={`/product/${product.slug || product.id}`} className="block w-full h-full">
                     {product.image_url ? (
                         <Image
@@ -188,14 +188,19 @@ export default function ProductCard({ product }: ProductCardProps) {
                 <div className="mt-auto pt-2 flex gap-2">
                     <button
                         onClick={handleAddToCart}
-                        className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-1.5 ${adding
-                            ? 'bg-green-500 text-white'
-                            : 'bg-[#1a237e] hover:bg-[#0d1459] text-white'
+                        disabled={(product.stock ?? 1) <= 0}
+                        className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-1.5 ${(product.stock ?? 1) <= 0
+                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            : adding
+                                ? 'bg-green-500 text-white'
+                                : 'bg-[#1a237e] hover:bg-[#0d1459] text-white'
                             }`}
                     >
-                        {adding
-                            ? '✓ Added!'
-                            : <><ShoppingCart className="w-3.5 h-3.5" /> Add to cart</>
+                        {(product.stock ?? 1) <= 0
+                            ? 'Out of stock'
+                            : adding
+                                ? '✓ Added!'
+                                : <><ShoppingCart className="w-3.5 h-3.5" /> Add to cart</>
                         }
                     </button>
 
