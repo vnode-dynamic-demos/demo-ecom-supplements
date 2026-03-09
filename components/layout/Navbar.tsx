@@ -90,16 +90,15 @@ export default function Navbar() {
     return (
         <header className={`fixed top-8 left-0 right-0 z-30 transition-all duration-200 ${scrolled ? 'shadow-md' : ''} bg-white border-b border-gray-200`}>
 
-            {/* ── Row 1: Logo + Search + Actions ─────────────────────────── */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* ── Desktop Row 1: Logo + Search + Actions ─────────────────────────── */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 hidden md:block">
                 <div className="h-16 flex items-center gap-4">
-
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2 flex-shrink-0 group">
                         <div className="p-1.5 bg-[#1a237e] rounded-lg group-hover:bg-[#0d1459] transition-colors">
                             <Dumbbell className="w-5 h-5 text-white" />
                         </div>
-                        <div className="hidden sm:block">
+                        <div>
                             <span className="font-black text-[#1a237e] text-xl tracking-tight">
                                 V-Node<span className="text-[#ff6b35]">Nutra</span>
                             </span>
@@ -108,7 +107,7 @@ export default function Navbar() {
                     </Link>
 
                     {/* Brands dropdown */}
-                    <div className="relative hidden md:block" ref={brandRef}>
+                    <div className="relative" ref={brandRef}>
                         <button
                             onClick={() => setBrandOpen(b => !b)}
                             className="flex items-center gap-1.5 px-4 py-2 border border-gray-200 rounded-full text-sm font-semibold text-gray-700 hover:border-[#1a237e] hover:text-[#1a237e] transition-all"
@@ -137,7 +136,7 @@ export default function Navbar() {
                         )}
                     </div>
 
-                    {/* Search bar */}
+                    {/* Search bar Desktop */}
                     <div className="flex-1 relative" ref={searchRef}>
                         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                         <input
@@ -152,15 +151,14 @@ export default function Navbar() {
                                 if (e.key === 'Enter' && searchQuery.trim() !== '') {
                                     setShowSuggestions(false);
                                     router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
-                                    setSearch(''); // Optional: clear search after submission
-                                    setMobileOpen(false); // Close mobile menu if open
+                                    setSearch('');
                                 }
                             }}
                             placeholder="Search for Proteins, Vitamins, Brands..."
                             className="w-full bg-gray-50 border border-gray-200 rounded-full pl-10 pr-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#1a237e] focus:bg-white transition-all"
                         />
 
-                        {/* Auto-complete Suggestions Dropdown */}
+                        {/* Auto-complete Suggestions Dropdown Desktop */}
                         {showSuggestions && searchQuery.trim().length >= 2 && (
                             <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50">
                                 {isSearching ? (
@@ -205,45 +203,105 @@ export default function Navbar() {
 
                     {/* Actions */}
                     <div className="flex items-center gap-2 flex-shrink-0">
-                        {/* Login */}
-                        <Link
-                            href="/account"
-                            className="hidden md:flex items-center gap-1.5 px-4 py-2 rounded-full border border-gray-200 text-sm font-semibold text-gray-700 hover:border-[#1a237e] hover:text-[#1a237e] transition-all"
-                        >
+                        <Link href="/account" className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-gray-200 text-sm font-semibold text-gray-700 hover:border-[#1a237e] hover:text-[#1a237e] transition-all">
                             <User className="w-4 h-4" /> Login
                         </Link>
-
-                        {/* Wishlist */}
-                        <Link
-                            href="/wishlist"
-                            className="hidden md:flex p-2.5 rounded-full border border-gray-200 text-gray-600 hover:border-[#1a237e] hover:text-[#1a237e] transition-all"
-                            aria-label="Wishlist"
-                        >
+                        <Link href="/wishlist" className="p-2.5 rounded-full border border-gray-200 text-gray-600 hover:border-[#1a237e] hover:text-[#1a237e] transition-all" aria-label="Wishlist">
                             <Heart className="w-4.5 h-4.5" />
                         </Link>
-
-                        {/* Cart */}
-                        <button
-                            onClick={toggleCart}
-                            className="relative flex items-center gap-1.5 px-3 py-2.5 bg-[#1a237e] hover:bg-[#0d1459] text-white rounded-full text-sm font-semibold transition-all"
-                            aria-label="Cart"
-                        >
+                        <button onClick={toggleCart} className="relative flex items-center gap-1.5 px-3 py-2.5 bg-[#1a237e] hover:bg-[#0d1459] text-white rounded-full text-sm font-semibold transition-all">
                             <ShoppingCart className="w-4 h-4" />
-                            <span className="hidden sm:inline">Cart</span>
+                            <span>Cart</span>
                             {count > 0 && (
-                                <span className="bg-[#ff6b35] text-white text-xs font-black w-5 h-5 rounded-full flex items-center justify-center animate-bounce-once">
+                                <span className="absolute -top-1 -right-1 bg-[#ff6b35] text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center animate-bounce-once">
                                     {count > 9 ? '9+' : count}
                                 </span>
                             )}
                         </button>
+                    </div>
+                </div>
+            </div>
 
-                        {/* Mobile hamburger */}
-                        <button
-                            onClick={() => setMobileOpen(o => !o)}
-                            className="md:hidden p-2 rounded-lg border border-gray-200 text-gray-600"
-                        >
-                            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-                        </button>
+            {/* ── Mobile Layout ─────────────────────────────────────────────── */}
+            <div className="md:hidden">
+                {/* Mobile Top Row: Hamburger, Logo, Cart */}
+                <div className="h-14 px-4 flex items-center justify-between gap-4">
+                    <button onClick={() => setMobileOpen(o => !o)} className="p-2 -ml-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+                        {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                    </button>
+
+                    {/* Mobile Logo centered */}
+                    <Link href="/" className="flex items-center gap-1.5 absolute left-1/2 -translate-x-1/2">
+                        <div className="p-1 bg-[#1a237e] rounded-md">
+                            <Dumbbell className="w-4 h-4 text-white" />
+                        </div>
+                        <span className="font-black text-[#1a237e] text-lg tracking-tight">
+                            V-Node<span className="text-[#ff6b35]">Nutra</span>
+                        </span>
+                    </Link>
+
+                    {/* Mobile Cart Button */}
+                    <button onClick={toggleCart} className="p-2 -mr-2 text-gray-700 relative hover:bg-gray-100 rounded-lg">
+                        <ShoppingCart className="w-5 h-5" />
+                        {count > 0 && (
+                            <span className="absolute top-1 right-0.5 bg-[#ff6b35] text-white text-[9px] font-black w-3.5 h-3.5 rounded-full flex items-center justify-center">
+                                {count > 9 ? '9+' : count}
+                            </span>
+                        )}
+                    </button>
+                </div>
+
+                {/* Mobile Search Row */}
+                <div className="px-4 pb-3">
+                    <div className="relative">
+                        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onFocus={() => { if (searchQuery.trim().length >= 2) setShowSuggestions(true) }}
+                            onChange={e => {
+                                setSearch(e.target.value);
+                                setShowSuggestions(true);
+                            }}
+                            onKeyDown={e => {
+                                if (e.key === 'Enter' && searchQuery.trim() !== '') {
+                                    setShowSuggestions(false);
+                                    router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+                                    setSearch('');
+                                }
+                            }}
+                            placeholder="Search..."
+                            className="w-full bg-gray-50 border border-gray-200 rounded-full pl-10 pr-4 py-2 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#1a237e] focus:bg-white"
+                        />
+                        {/* Auto-complete Mobile */}
+                        {showSuggestions && searchQuery.trim().length >= 2 && (
+                            <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-[60]">
+                                {isSearching ? (
+                                    <div className="p-4 text-center text-sm text-gray-500">Searching...</div>
+                                ) : searchResults.length > 0 ? (
+                                    <div className="divide-y divide-gray-50 max-h-60 overflow-y-auto">
+                                        {searchResults.map(product => (
+                                            <Link
+                                                key={product.id}
+                                                href={`/product/${product.slug || product.id}`}
+                                                onClick={() => { setShowSuggestions(false); setSearch(''); }}
+                                                className="flex items-center gap-3 p-3 hover:bg-gray-50"
+                                            >
+                                                <div className="w-10 h-10 bg-gray-100 rounded flex-shrink-0 relative overflow-hidden">
+                                                    {product.image_url && <img src={product.image_url} alt="" className="w-full h-full object-contain p-1" />}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-semibold text-gray-800 truncate">{product.name}</p>
+                                                    <p className="text-xs text-gray-500 truncate">{product.brand?.name}</p>
+                                                </div>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="p-4 text-center text-sm text-gray-500">No results found.</div>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

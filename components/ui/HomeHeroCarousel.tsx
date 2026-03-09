@@ -16,19 +16,19 @@ export function HomeHeroCarousel() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <Carousel autoPlay loop showArrows showDots align="center" className="rounded-xl sm:rounded-2xl overflow-hidden shadow-sm bg-gray-50">
                     {featuredProductHero?.isActive && (
-                        <div className="min-w-0 flex-[0_0_100%] aspect-[16/7] md:aspect-[21/9] lg:aspect-[3/1] relative select-none">
+                        <div className="min-w-0 flex-[0_0_100%] aspect-[16/9] md:aspect-[21/9] lg:aspect-[3/1] relative select-none bg-white rounded-xl sm:rounded-2xl overflow-hidden">
                             <FeaturedProductHero />
                         </div>
                     )}
                     {activeHeroes.map((slide: any) => {
                         const imgSrc = slide.imageUrl.startsWith('/') ? `${slide.imageUrl}?v=${Date.now()}` : slide.imageUrl;
                         return (
-                            <div key={slide.id} className="w-full relative aspect-[16/7] md:aspect-[21/9] lg:aspect-[3/1]">
+                            <div key={slide.id} className="w-full relative aspect-[16/9] md:aspect-[21/9] lg:aspect-[3/1] bg-gray-100 rounded-xl sm:rounded-2xl overflow-hidden">
                                 <Link href={slide.linkUrl} className="block w-full h-full relative">
                                     <img
                                         src={imgSrc}
                                         alt="Promotional Banner"
-                                        className="absolute inset-0 w-full h-full object-cover object-center"
+                                        className="absolute inset-0 w-full h-full object-contain sm:object-cover object-center"
                                     />
                                 </Link>
                             </div>
