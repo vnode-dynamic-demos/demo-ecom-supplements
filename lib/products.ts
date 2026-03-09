@@ -200,7 +200,7 @@ We skip the flavouring, fillers, and marketing fluff. PureCre is creatine monohy
     {
         id: '4', name: 'MuscleBlaze Gold Whey Protein | 25g Protein | 1kg Chocolate', slug: 'muscleblaze-gold-whey',
         description: 'Lab-certified whey with digestive enzyme blend.', category_id: 'cat-protein', brand_id: 'b-muscleblaze',
-        base_price: 2299, mrp: 3199, price_per_unit: '₹76.6/serving', image_url: 'https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=400&auto=format&fit=crop',
+        base_price: 2299, mrp: 3199, price_per_unit: '₹76.6/serving', image_url: '/products/mb-gold-whey.png',
         is_featured: false, rating: 4.6, review_count: 8234, badges: ['LAB TESTED'], certifications: ['HEAVY METALS TESTED'],
         highlights: ['25g Protein', 'DigeGen enzyme blend', '30 servings', 'Chocolate flavour'],
         best_before: 'Sep 2026', stock: 89,
@@ -210,7 +210,7 @@ We skip the flavouring, fillers, and marketing fluff. PureCre is creatine monohy
     {
         id: '5', name: 'GNC Pro Performance 100% Whey Protein | 24g Protein | 2lb', slug: 'gnc-pro-whey',
         description: 'GNC\'s trusted whey blend with 24g protein and 5.5g BCAAs.', category_id: 'cat-protein', brand_id: 'b-gnc',
-        base_price: 3199, mrp: 4199, price_per_unit: '₹106.6/serving', image_url: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&auto=format&fit=crop',
+        base_price: 3199, mrp: 4199, price_per_unit: '₹106.6/serving', image_url: '/products/gnc-pro-whey.png',
         is_featured: false, rating: 4.4, review_count: 2741, badges: ['GNC CERTIFIED'], certifications: ['NSF'],
         highlights: ['24g Protein', '5.5g BCAAs', 'NSF Certified', 'No artificial sweeteners'],
         best_before: 'Aug 2026', stock: 34,
@@ -220,7 +220,7 @@ We skip the flavouring, fillers, and marketing fluff. PureCre is creatine monohy
     {
         id: '6', name: 'Optimum Nutrition Gold Standard 100% Whey | 24g Protein | 2lb', slug: 'on-gold-standard-whey',
         description: 'The world\'s best-selling whey protein. 24g protein, 5.5g BCAAs.', category_id: 'cat-protein', brand_id: 'b-on',
-        base_price: 3499, mrp: 4799, price_per_unit: '₹116.6/serving', image_url: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&auto=format&fit=crop',
+        base_price: 3499, mrp: 4799, price_per_unit: '₹116.6/serving', image_url: '/products/on-gold-whey.png',
         is_featured: true, rating: 4.8, review_count: 15203, badges: ['WORLD #1', 'BEST SELLER'], certifications: ['INFORMED SPORT'],
         highlights: ['Whey Isolate primary source', '24g protein', 'No fillers', '30 servings'],
         best_before: 'Nov 2026', stock: 12,
@@ -230,7 +230,7 @@ We skip the flavouring, fillers, and marketing fluff. PureCre is creatine monohy
     {
         id: '7', name: 'Fast&Up Charge Natural Vitamin C | 1000mg | Effervescent | 20 Tabs', slug: 'fastup-charge-vitamin-c',
         description: 'Natural Vitamin C + Zinc + Echinacea for immunity. Effervescent.', category_id: 'cat-vitamins', brand_id: 'b-fastup',
-        base_price: 299, mrp: 399, price_per_unit: '₹15/tab', image_url: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&auto=format&fit=crop',
+        base_price: 299, mrp: 399, price_per_unit: '₹15/tab', image_url: '/products/fastup-vitamin-c.png',
         is_featured: false, rating: 4.3, review_count: 3890, badges: ['NATURAL'], certifications: ['FSSAI'],
         highlights: ['1000mg Natural Vitamin C', 'Added Zinc & Echinacea', 'Effervescent formula', '20 tablets'],
         best_before: 'Jan 2027', stock: 200,
@@ -240,7 +240,7 @@ We skip the flavouring, fillers, and marketing fluff. PureCre is creatine monohy
     {
         id: '8', name: 'MyProtein Impact Whey Isolate | 90% Protein | 25 Servings | Strawberry', slug: 'myprotein-impact-whey-isolate',
         description: 'Instantized whey isolate with 90% protein content per 100g.', category_id: 'cat-protein', brand_id: 'b-myprotein',
-        base_price: 2799, mrp: 3799, price_per_unit: '₹112/serving', image_url: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&auto=format&fit=crop',
+        base_price: 2799, mrp: 3799, price_per_unit: '₹112/serving', image_url: '/products/myprotein-isolate.png',
         is_featured: false, rating: 4.5, review_count: 4231, badges: ['ISOLATE'], certifications: ['INFORMED SPORT'],
         highlights: ['90% protein content', '25 servings', 'Instantized', 'Strawberry flavour'],
         best_before: 'Oct 2026', stock: 67,
@@ -250,7 +250,7 @@ We skip the flavouring, fillers, and marketing fluff. PureCre is creatine monohy
     {
         id: '9', name: 'Biozyme 5-in-1 Multivitamin | 60 Tabs', slug: 'muscleblaze-biozyme-multivitamin',
         description: 'Clinically tested MB EnzymePro for 50% higher protein absorption.', category_id: 'cat-vitamins', brand_id: 'b-muscleblaze',
-        base_price: 699, mrp: 899, price_per_unit: '₹11.6/tab', image_url: 'https://images.unsplash.com/photo-1577401239170-897942555fb3?w=400&auto=format&fit=crop',
+        base_price: 699, mrp: 899, price_per_unit: '₹11.6/tab', image_url: '/products/multivitamin.png',
         is_featured: true, rating: 4.8, review_count: 5120, badges: ['BEST SELLER'], certifications: ['CLINICALLY TESTED'],
         highlights: ['100% RDA of 25 vitamins & minerals', 'Joint blend', 'Testosterone support', '60 tablets'],
         best_before: 'Dec 2026', stock: 150,
@@ -260,7 +260,7 @@ We skip the flavouring, fillers, and marketing fluff. PureCre is creatine monohy
     {
         id: '10', name: 'NaturalTein Ultimate Vegan Omega 3 | 60 Caps', slug: 'naturaltein-omega-3',
         description: 'Algal oil based vegan Omega-3. 1000mg EPA & DHA.', category_id: 'cat-vitamins', brand_id: 'b-vnodenutra',
-        base_price: 999, mrp: 1499, price_per_unit: '₹16.6/cap', image_url: 'https://images.unsplash.com/photo-1628187313271-bfbd712217f2?w=400&auto=format&fit=crop',
+        base_price: 999, mrp: 1499, price_per_unit: '₹16.6/cap', image_url: '/products/omega3.png',
         is_featured: false, rating: 4.5, review_count: 1205, badges: ['VEGAN'], certifications: ['FSSAI'],
         highlights: ['1000mg total Omega-3', 'Plant-based Algal source', 'Burpless formula', '60 capsules'],
         best_before: 'Jan 2027', stock: 85,
@@ -270,7 +270,7 @@ We skip the flavouring, fillers, and marketing fluff. PureCre is creatine monohy
     {
         id: '11', name: 'Carbamide Forte Probiotics 50 Billion CFU | 60 Veg Caps', slug: 'carbamide-forte-probiotics',
         description: 'High potency 50 Billion CFU with 20 strains and prebiotics.', category_id: 'cat-vitamins', brand_id: 'b-hkvitals',
-        base_price: 549, mrp: 799, price_per_unit: '₹9.1/cap', image_url: 'https://images.unsplash.com/photo-1610992015732-2849b2ba1cbe?w=400&auto=format&fit=crop',
+        base_price: 549, mrp: 799, price_per_unit: '₹9.1/cap', image_url: '/products/probiotics.png',
         is_featured: false, rating: 4.3, review_count: 3290, badges: ['GUT HEALTH'], certifications: ['GMP'],
         highlights: ['50 Billion CFU', '20 Probiotic Strains', 'Added Prebiotics', 'Vegetarian'],
         best_before: 'Feb 2027', stock: 230,
@@ -280,7 +280,7 @@ We skip the flavouring, fillers, and marketing fluff. PureCre is creatine monohy
     {
         id: '12', name: 'Pintola High Protein Oats | Dark Chocolate | 1kg', slug: 'pintola-high-protein-oats',
         description: '22g Protein per 100g. Premium rolled oats with dark chocolate and whey.', category_id: 'cat-health-foods', brand_id: 'b-vnodenutra',
-        base_price: 399, mrp: 550, price_per_unit: '₹399/kg', image_url: 'https://images.unsplash.com/photo-1517673132405-a56a62b18caf?w=400&auto=format&fit=crop',
+        base_price: 399, mrp: 550, price_per_unit: '₹399/kg', image_url: '/products/oats.png',
         is_featured: true, rating: 4.6, review_count: 8540, badges: ['HIGH PROTEIN'], certifications: ['FSSAI'],
         highlights: ['22g Protein per 100g', 'No added sugar', 'Rich dark chocolate', '1kg pack'],
         best_before: 'Oct 2026', stock: 400,
@@ -290,7 +290,7 @@ We skip the flavouring, fillers, and marketing fluff. PureCre is creatine monohy
     {
         id: '13', name: 'Pintola All Natural Peanut Butter | Crunchy | 1kg', slug: 'pintola-peanut-butter',
         description: '100% roasted peanuts. No hydrogenated oils, no added sugar or salt.', category_id: 'cat-health-foods', brand_id: 'b-vnodenutra',
-        base_price: 499, mrp: 699, price_per_unit: '₹499/kg', image_url: 'https://images.unsplash.com/photo-1547414368-22ba0a91eaef?w=400&auto=format&fit=crop',
+        base_price: 499, mrp: 699, price_per_unit: '₹499/kg', image_url: '/products/peanut-butter.png',
         is_featured: true, rating: 4.9, review_count: 21500, badges: ['ALL NATURAL'], certifications: ['NON-GMO'],
         highlights: ['30g Protein per 100g', 'Zero added sugar', 'Vegan & Gluten-free', '1kg tub'],
         best_before: 'Nov 2026', stock: 600,

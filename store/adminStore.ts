@@ -2,13 +2,26 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { PromoBanner, Coupon, GWPOffer, FlashDeal } from '@/types';
+import type { PromoBanner, HeroBanner, Coupon, GWPOffer, FlashDeal } from '@/types';
+
+export interface FeaturedProductHeroData {
+    isActive: boolean;
+    productId: string;
+    badgeLabel: string;
+    heading: string;
+    subheading: string;
+}
 
 // ─── Default data (what ships in demo mode) ──────────────────────────────────
 const DEFAULT_BANNERS: PromoBanner[] = [
     { id: 'b1', tag: 'Limited Time', title: 'Protein Week Sale', subtitle: 'Up to 40% off on Whey Protein', couponCode: 'PROTEIN15', bgGradient: 'from-orange-600 to-red-700', isActive: true, sortOrder: 0 },
     { id: 'b2', tag: 'New Arrivals', title: 'NitroBlast 2.0', subtitle: 'Reformulated for maximum pump', couponCode: 'VNODE10', bgGradient: 'from-blue-700 to-indigo-800', isActive: true, sortOrder: 1 },
     { id: 'b3', tag: 'Bundle Deal', title: 'Stack & Save 25%', subtitle: 'Buy any 2 products & save big', couponCode: 'HYPER25', bgGradient: 'from-emerald-700 to-teal-800', isActive: true, sortOrder: 2 },
+];
+
+const DEFAULT_HERO: HeroBanner[] = [
+    { id: 'h1', imageUrl: '/banners/protein-sale.png', linkUrl: '/products?category=cat-protein', isActive: true, sortOrder: 0 },
+    { id: 'h2', imageUrl: '/banners/health-sale.png', linkUrl: '/products?goal=health', isActive: true, sortOrder: 1 },
 ];
 
 const DEFAULT_COUPONS: Coupon[] = [
@@ -31,10 +44,15 @@ const DEFAULT_FLASH: FlashDeal[] = [
 
 // ─── Store ──────────────────────────────────────────────────────────────────
 interface AdminStore {
+    heroBanners: HeroBanner[];
     banners: PromoBanner[];
     coupons: Coupon[];
     gwpOffers: GWPOffer[];
     flashDeals: FlashDeal[];
+    featuredProductHero: FeaturedProductHeroData;
+
+    // Featured Hero actions
+    updateFeaturedProductHero: (updates: Partial<FeaturedProductHeroData>) => void;
 
     // Banner actions
     addBanner: (b: Omit<PromoBanner, 'id' | 'sortOrder'>) => void;
@@ -42,6 +60,13 @@ interface AdminStore {
     deleteBanner: (id: string) => void;
     toggleBanner: (id: string) => void;
     reorderBanners: (ids: string[]) => void;
+
+    // Hero banner actions
+    addHeroBanner: (b: Omit<HeroBanner, 'id' | 'sortOrder'>) => void;
+    updateHeroBanner: (id: string, updates: Partial<HeroBanner>) => void;
+    deleteHeroBanner: (id: string) => void;
+    toggleHeroBanner: (id: string) => void;
+    reorderHeroBanners: (ids: string[]) => void;
 
     // Coupon actions
     addCoupon: (c: Omit<Coupon, 'id' | 'usedCount'>) => void;
@@ -66,10 +91,36 @@ const uid = () => Math.random().toString(36).slice(2, 9);
 export const useAdminStore = create<AdminStore>()(
     persist(
         (set, get) => ({
+            heroBanners: DEFAULT_HERO,
             banners: DEFAULT_BANNERS,
             coupons: DEFAULT_COUPONS,
             gwpOffers: DEFAULT_GWP,
             flashDeals: DEFAULT_FLASH,
+            featuredProductHero: {
+                isActive: true,
+                productId: '1', // HyperWhey Pro
+                badgeLabel: 'FSSAI & NSF Certified',
+                heading: "World's Best Whey Protein",
+                subheading: 'Now in India',
+            },
+
+            updateFeaturedProductHero: (updates) => set((s) => ({
+                featuredProductHero: { ...s.featuredProductHero, ...updates }
+            })),
+
+            addHeroBanner: (b) => set((s) => ({
+                heroBanners: [...s.heroBanners, { ...b, id: uid(), sortOrder: s.heroBanners.length }],
+            })),
+            updateHeroBanner: (id, updates) => set((s) => ({
+                heroBanners: s.heroBanners.map((b) => b.id === id ? { ...b, ...updates } : b),
+            })),
+            deleteHeroBanner: (id) => set((s) => ({ heroBanners: s.heroBanners.filter((b) => b.id !== id) })),
+            toggleHeroBanner: (id) => set((s) => ({
+                heroBanners: s.heroBanners.map((b) => b.id === id ? { ...b, isActive: !b.isActive } : b),
+            })),
+            reorderHeroBanners: (ids) => set((s) => ({
+                heroBanners: ids.map((id, i) => ({ ...s.heroBanners.find((b) => b.id === id)!, sortOrder: i })),
+            })),
 
             addBanner: (b) => set((s) => ({
                 banners: [...s.banners, { ...b, id: uid(), sortOrder: s.banners.length }],

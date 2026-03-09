@@ -1,43 +1,10 @@
-import { getFeaturedProducts, getAllProducts } from '@/lib/products';
-import { MOCK_BRANDS } from '@/lib/products';
-import ProductCard from '@/components/product/ProductCard';
+import { getFeaturedProducts, getAllProducts, MOCK_BRANDS } from '@/lib/products';
+import { HomeHeroCarousel } from '@/components/ui/HomeHeroCarousel';
 import ProductShelf from '@/components/product/ProductShelf';
-import { Carousel } from '@/components/ui/Carousel';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Zap, Target, Heart, TrendingUp, ShieldCheck, Truck, RotateCcw, Users, Star } from 'lucide-react';
 
-// ─── Hero banners ─────────────────────────────────────────────────────────────
-const HERO_SLIDES = [
-  {
-    id: 'slide-1',
-    brand: 'HyperWhey Pro',
-    badge: '🔬 FSSAI & NSF Certified',
-    headline: 'World\'s Best\nWhey Protein',
-    subline: 'Now in India',
-    body: '27g Protein · Zero Sugar · 30 Servings · Mixes Instantly',
-    cta: 'Shop Now — ₹2,499',
-    ctaHref: '/product/hyperwhey-pro-whey-protein',
-    discount: '24% OFF',
-    image: '/products/hyperwhey-pro.png',
-    bg: '#eef2ff',
-    accent: '#1a237e',
-  },
-  {
-    id: 'slide-2',
-    brand: 'NitroBlast Pre-Workout',
-    badge: '⚡ Max Strength Formula',
-    headline: 'Explosive Energy\nUnstoppable Focus',
-    subline: 'For Elite Athletes',
-    body: '300mg Caffeine · 6g Citrulline · 20 Servings',
-    cta: 'Get Started — ₹1,799',
-    ctaHref: '/product/nitroblast-pre-workout',
-    discount: '28% OFF',
-    image: '/products/nitroblast.png',
-    bg: '#fff3e0',
-    accent: '#e65100',
-  },
-];
 
 // ─── Goal categories ──────────────────────────────────────────────────────────
 const GOALS = [
@@ -61,7 +28,7 @@ const PROMO_BANNERS = [
   { tag: 'Flash Deal', title: 'Creatine Bundle', sub: 'Buy 2 PureCre — Get 1 FREE', code: 'CRE3FOR2', bg: '#1b5e20', text: 'white' },
 ];
 
-export default async function HomePage() {
+export default async function Home() {
   const featured = await getFeaturedProducts();
   const allProducts = await getAllProducts();
 
@@ -71,66 +38,7 @@ export default async function HomePage() {
     <div className="min-h-screen bg-[#f5f5f5]">
 
       {/* ── Hero Banner ───────────────────────────────────── */}
-      <Carousel autoPlay loop showArrows showDots align="center" className="bg-white border-b border-gray-100">
-        {HERO_SLIDES.map(slide => (
-          <div key={slide.id} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-            <div className="grid lg:grid-cols-2 gap-8 items-center">
-              {/* Text */}
-              <div>
-                <span className="inline-flex items-center gap-2 bg-[#eef2ff] text-[#1a237e] text-xs font-bold px-3 py-1.5 rounded-full mb-4">
-                  {slide.badge}
-                </span>
-                <p className="text-gray-500 font-semibold text-sm mb-1">{slide.brand}</p>
-                <h1 className="text-4xl lg:text-5xl font-black text-gray-900 mb-2 leading-tight whitespace-pre-line">
-                  {slide.headline}
-                </h1>
-                <p className="text-[#1a237e] font-bold text-xl mb-4">{slide.subline}</p>
-                <p className="text-gray-500 text-sm mb-6">{slide.body}</p>
-                <div className="flex flex-wrap items-center gap-4">
-                  <Link
-                    href={slide.ctaHref}
-                    className="bg-[#1a237e] hover:bg-[#0d1459] text-white font-black px-8 py-3.5 rounded-xl transition-all hover:shadow-lg hover:shadow-blue-900/20 flex items-center gap-2"
-                  >
-                    {slide.cta} <ArrowRight className="w-4 h-4" />
-                  </Link>
-                  <div className="bg-red-500 text-white font-black px-4 py-2 rounded-xl text-sm">{slide.discount}</div>
-                </div>
-                <div className="flex flex-wrap gap-4 mt-6">
-                  {['5000+ Products', '300+ Brands', 'Free Delivery ₹999+', 'FSSAI Certified'].map(t => (
-                    <span key={t} className="flex items-center gap-1.5 text-xs text-gray-500 font-semibold">
-                      <span className="w-1.5 h-1.5 bg-[#1a237e] rounded-full" /> {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Image */}
-              <div className="relative flex items-center justify-center rounded-2xl p-8 h-72 lg:h-96" style={{ backgroundColor: slide.bg }}>
-                <Image
-                  src={slide.image}
-                  alt={slide.brand}
-                  width={320}
-                  height={320}
-                  className="object-contain drop-shadow-2xl"
-                  priority
-                />
-                <div className="absolute top-4 right-4 bg-white rounded-xl px-3 py-2 shadow-md border border-gray-100">
-                  <p className="text-[10px] text-gray-400 font-semibold uppercase">Rating</p>
-                  <div className="flex items-center gap-1">
-                    <span className="text-amber-500 font-black">4.7</span>
-                    <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                  </div>
-                  <p className="text-[10px] text-gray-400">3,124 reviews</p>
-                </div>
-                <div className="absolute bottom-4 left-4 bg-white rounded-xl px-3 py-2 shadow-md border border-gray-100">
-                  <p className="text-[10px] text-green-700 font-bold">✅ Lab Tested</p>
-                  <p className="text-[10px] text-gray-400">Authentic Pick</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </Carousel>
+      <HomeHeroCarousel />
 
       {/* ── Trust Bar ─────────────────────────────────────── */}
       <section className="bg-white border-b border-gray-100 py-4">

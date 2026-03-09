@@ -129,6 +129,22 @@ export interface PromoBanner {
     sortOrder: number;
 }
 
+export interface HeroBanner {
+    id: string;
+    imageUrl: string;
+    linkUrl: string;       // where clicking the banner takes the user
+    isActive: boolean;
+    sortOrder: number;
+}
+
+export interface FeaturedProductHeroData {
+    productId: string;
+    isActive: boolean;
+    heading: string;
+    subheading: string;
+    badgeLabel: string;
+}
+
 export interface Coupon {
     id: string;
     code: string;

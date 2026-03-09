@@ -84,18 +84,40 @@ export default function NewProductPage() {
                             <input value={form.name} onChange={upd('name')} placeholder="e.g. HyperWhey Pro Chocolate Fudge 1kg"
                                 className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1a237e]" />
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="space-y-2">
                                 <label className="block text-gray-500 text-xs font-bold uppercase tracking-wider mb-1.5">Brand</label>
-                                <select value={form.brand} onChange={upd('brand')} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1a237e] bg-white">
-                                    {BRANDS.map(b => <option key={b}>{b}</option>)}
+                                <select
+                                    value={BRANDS.includes(form.brand) ? form.brand : '__CUSTOM__'}
+                                    onChange={(e) => {
+                                        if (e.target.value === '__CUSTOM__') upd('brand')({ target: { value: '' } } as any);
+                                        else upd('brand')(e);
+                                    }}
+                                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1a237e] bg-white">
+                                    {BRANDS.map(b => <option key={b} value={b}>{b}</option>)}
+                                    <option value="__CUSTOM__" className="font-bold text-[#1a237e]">+ Add New Brand...</option>
                                 </select>
+                                {!BRANDS.includes(form.brand) && (
+                                    <input value={form.brand} onChange={upd('brand')} placeholder="Enter new brand name" autoFocus
+                                        className="w-full border border-indigo-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1a237e] bg-indigo-50/30" />
+                                )}
                             </div>
-                            <div>
+                            <div className="space-y-2">
                                 <label className="block text-gray-500 text-xs font-bold uppercase tracking-wider mb-1.5">Category</label>
-                                <select value={form.category} onChange={upd('category')} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1a237e] bg-white">
-                                    {CATEGORIES.map(c => <option key={c}>{c}</option>)}
+                                <select
+                                    value={CATEGORIES.includes(form.category) ? form.category : '__CUSTOM__'}
+                                    onChange={(e) => {
+                                        if (e.target.value === '__CUSTOM__') upd('category')({ target: { value: '' } } as any);
+                                        else upd('category')(e);
+                                    }}
+                                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1a237e] bg-white">
+                                    {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                                    <option value="__CUSTOM__" className="font-bold text-[#1a237e]">+ Add New Category...</option>
                                 </select>
+                                {!CATEGORIES.includes(form.category) && (
+                                    <input value={form.category} onChange={upd('category')} placeholder="Enter new category name" autoFocus
+                                        className="w-full border border-indigo-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1a237e] bg-indigo-50/30" />
+                                )}
                             </div>
                         </div>
                         <div>
@@ -254,7 +276,7 @@ export default function NewProductPage() {
                             : saved ? '✅ Product Saved!' : <><Save className="w-4 h-4" /> Save Product</>}
                     </button>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }

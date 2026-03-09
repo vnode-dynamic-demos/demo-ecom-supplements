@@ -9,7 +9,7 @@ import type { Product } from '@/types';
 
 const CATEGORIES = [
     { label: 'Protein', href: '/products?category=protein' },
-    { label: 'Pre-Workout', href: '/products?category=pre-workout' },
+    { label: 'Pre-Workout', href: '/products?category=preworkout' },
     { label: 'Creatine', href: '/products?category=creatine' },
     { label: 'Vitamins', href: '/products?category=vitamins' },
     { label: 'Weight Management', href: '/products?category=weight-management' },
